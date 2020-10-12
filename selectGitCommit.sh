@@ -1,4 +1,4 @@
-#/bin/bash
+#! /usr/bin/bash
 # from SO: https://stackoverflow.com/a/54261882/317605 (by https://stackoverflow.com/users/8207842/dols3m)
 function prompt_for_multiselect {
 
@@ -100,6 +100,7 @@ function prompt_for_multiselect {
 
 # Usage Example
 
+
 MODIFIED_FILES=($(git ls-files -m))
 
 SELECTED_STRING="" 
@@ -109,23 +110,44 @@ for i in "${!MODIFIED_FILES[@]}"; do
 	OPTIONS_STRING+="${MODIFIED_FILES[$i]} (modified);"
 done
 
-DELETED_FILES = ($(git ls-files -d))
 
 
+UNTRACKED_FILES=($(git ls-files -o))
 
-NEW_FILES = ($(git ls-files -O))
+for i in "${!UNTRACKED_FILES[@]}"; do
+  SELECTED_STRING+=";"
 
-
-
-prompt_for_multiselect SELECTED "$OPTIONS_STRING" $SELECTED_STRING
-
-for i in "${!SELECTED[@]}"; do
-	if [ "${SELECTED[$i]}" == "true" ]; then
-		git add "${OPTIONS_VALUES[$i]}"
-    CHECKED+=("${OPTIONS_VALUES[$i]}")
-	fi
+	OPTIONS_STRING+="${UNTRACKED_FILES[$i]} (untracked);"
 done
 
 
-echo Changed following files: 
-echo "${CHECKED[@]}"
+DELETED_FILES=($(git ls-files -d))
+
+for i in "${!UNTRACKED_FILES[@]}"; do
+  if ["${DELETED_FILES[$i]}"!=""]; then
+    SELECTED_STRING+=";"
+    OPTIONS_STRING+="${DELETED_FILES[$i]} (deleted);"
+  fi
+done
+
+prompt_for_multiselect SELECTED "$OPTIONS_STRING" $SELECTED_STRING
+
+
+ALL_FILES=("${MODIFIED_FILES[@]}" "${UNTRACKED_FILES[@]}" "${UNTRACKED_FILES[@]}")
+
+STR=""
+for i in "${!SELECTED[@]}"; do
+	if [ "${SELECTED[$i]}" == "true" ]; then
+		
+    #git add ("${MODIFIED_FILES[$i]}") 
+
+    CHECKED+=("${ALL_FILES[$i]}")
+    #CHECKED+=("${MODIFIED_FILES[$i]}") 
+	fi
+done
+git add "${CHECKED[@]}"
+echo Staged these files:
+echo "" 
+printf '%s\n' "${CHECKED[@]}"
+
+
