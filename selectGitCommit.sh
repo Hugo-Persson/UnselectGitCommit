@@ -98,14 +98,14 @@ function prompt_for_multiselect {
 
 # Usage Example
 
-OPTIONS_VALUES=("APPL" "MSFT" "GOOG")
-OPTIONS_LABELS=("Apple" "Microsoft" "Google")
+OPTIONS_VALUES=($(git ls-files -m))
+OPTIONS_LABELS=("")
 
 for i in "${!OPTIONS_VALUES[@]}"; do
 	OPTIONS_STRING+="${OPTIONS_VALUES[$i]} (${OPTIONS_LABELS[$i]});"
 done
 
-prompt_for_multiselect SELECTED "$OPTIONS_STRING" "true;;true"
+prompt_for_multiselect SELECTED "$OPTIONS_STRING" "true;true;"
 
 for i in "${!SELECTED[@]}"; do
 	if [ "${SELECTED[$i]}" == "true" ]; then
