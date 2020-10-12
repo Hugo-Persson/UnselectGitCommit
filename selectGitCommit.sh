@@ -100,14 +100,21 @@ function prompt_for_multiselect {
 
 # Usage Example
 
-OPTIONS_VALUES=($(git ls-files -m))
-OPTIONS_LABELS=("")
+MODIFIED_FILES=($(git ls-files -m))
 
 SELECTED_STRING="" 
-for i in "${!OPTIONS_VALUES[@]}"; do
+for i in "${!MODIFIED_FILES[@]}"; do
   SELECTED_STRING+="true;"
-	OPTIONS_STRING+="${OPTIONS_VALUES[$i]} (${OPTIONS_LABELS[$i]});"
+
+	OPTIONS_STRING+="${MODIFIED_FILES[$i]} (modified);"
 done
+
+DELETED_FILES = ($(git ls-files -d))
+
+
+
+NEW_FILES = ($(git ls-files -O))
+
 
 
 prompt_for_multiselect SELECTED "$OPTIONS_STRING" $SELECTED_STRING
@@ -118,6 +125,7 @@ for i in "${!SELECTED[@]}"; do
     CHECKED+=("${OPTIONS_VALUES[$i]}")
 	fi
 done
+
 
 echo Changed following files: 
 echo "${CHECKED[@]}"
