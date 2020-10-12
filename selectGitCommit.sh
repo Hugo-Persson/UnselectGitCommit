@@ -96,20 +96,28 @@ function prompt_for_multiselect {
     eval $retval='("${selected[@]}")'
 }
 
+
+
 # Usage Example
 
 OPTIONS_VALUES=($(git ls-files -m))
 OPTIONS_LABELS=("")
 
+SELECTED_STRING="" 
 for i in "${!OPTIONS_VALUES[@]}"; do
+  SELECTED_STRING+="true;"
 	OPTIONS_STRING+="${OPTIONS_VALUES[$i]} (${OPTIONS_LABELS[$i]});"
 done
 
-prompt_for_multiselect SELECTED "$OPTIONS_STRING" "true;true;"
+
+prompt_for_multiselect SELECTED "$OPTIONS_STRING" $SELECTED_STRING
 
 for i in "${!SELECTED[@]}"; do
 	if [ "${SELECTED[$i]}" == "true" ]; then
-		CHECKED+=("${OPTIONS_VALUES[$i]}")
+		git add "${OPTIONS_VALUES[$i]}"
+    CHECKED+=("${OPTIONS_VALUES[$i]}")
 	fi
 done
+
+echo Changed following files: 
 echo "${CHECKED[@]}"
