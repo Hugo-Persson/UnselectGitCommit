@@ -112,28 +112,19 @@ done
 
 
 
-UNTRACKED_FILES=($(git ls-files -o))
+# UNTRACKED_FILES=($(git ls-files -o))
 
-for i in "${!UNTRACKED_FILES[@]}"; do
-  SELECTED_STRING+=";"
+# for i in "${!UNTRACKED_FILES[@]}"; do
+#   SELECTED_STRING+=";"
 
-	OPTIONS_STRING+="${UNTRACKED_FILES[$i]} (untracked);"
-done
+# 	OPTIONS_STRING+="${UNTRACKED_FILES[$i]} (untracked);"
+# done
 
-
-DELETED_FILES=($(git ls-files -d))
-
-for i in "${!UNTRACKED_FILES[@]}"; do
-  if ["${DELETED_FILES[$i]}"!=""]; then
-    SELECTED_STRING+=";"
-    OPTIONS_STRING+="${DELETED_FILES[$i]} (deleted);"
-  fi
-done
 
 prompt_for_multiselect SELECTED "$OPTIONS_STRING" $SELECTED_STRING
 
 
-ALL_FILES=("${MODIFIED_FILES[@]}" "${UNTRACKED_FILES[@]}" "${UNTRACKED_FILES[@]}")
+ALL_FILES=("${MODIFIED_FILES[@]}")
 
 STR=""
 for i in "${!SELECTED[@]}"; do
@@ -146,8 +137,8 @@ for i in "${!SELECTED[@]}"; do
 	fi
 done
 git add "${CHECKED[@]}"
-echo Staged these files:
-echo "" 
-printf '%s\n' "${CHECKED[@]}"
+echo Status:
+git status 
+#printf '%s\n' "${CHECKED[@]}"
 
 
